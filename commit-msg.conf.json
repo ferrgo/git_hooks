@@ -10,7 +10,7 @@
 	"first",
         "build",
         "ci",
-        "docs",
+        "doc",
         "feat",
         "fix",
         "perf",

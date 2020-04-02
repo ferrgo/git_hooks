@@ -6,6 +6,10 @@ See [Sailr](https://github.com/craicoverflow/sailr)
 See [Convetional Commits](https://www.conventionalcommits.org/en/v1.0.0/)
 See [How to Write a Git Commit Message](https://chris.beams.io/posts/git-commit/)
 
+### Deps
+1. `jq` > commit-msg hook uses `jq` for `JSON` parsing
+
+### Installation
 Let the `commit-msg.conf.json` in your project folder and make it reflect your Standards, copy or symlink the `commit-msg` script to your `project/path/.git/hooks/` folder. 
 
 PS: May be necessary to make it executable as `chmod +x project/path/.git/hooks/commit-msg`
