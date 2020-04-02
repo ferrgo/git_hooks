@@ -2,8 +2,11 @@
 
 ## Commit-Msg
 See [aradi/git-commit-msg-hook](https://gist.github.com/aradi/a651ee97cc6bd09acb237794a05eaa7f)
+
 See [Sailr](https://github.com/craicoverflow/sailr)
+
 See [Convetional Commits](https://www.conventionalcommits.org/en/v1.0.0/)
+
 See [How to Write a Git Commit Message](https://chris.beams.io/posts/git-commit/)
 
 ### Deps
