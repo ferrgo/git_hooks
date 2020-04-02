@@ -1,0 +1,91 @@
+#!/bin/bash
+config=commit-msg.conf.json
+tmp_file_name='_gitmsg.saved.txt'
+
+# set variables
+enabled=$(jq -r .enabled $config)
+revert=$(jq -r .revert $config)
+types=($(jq -r '.types[]' $config))
+summary_min_length=$(jq -r .summary_length.min $config)
+summary_max_length=$(jq -r .summary_length.max $config)
+body_wrap=$(jq -r .body_wrap $config)
+
+# No file or not enabled so, not checking for commit stndrd
+if [[ ! -f $config || ($enabled == false) ]]; then
+	echo -e "INFO: Not checking for commit standards"
+	exit 0
+fi
+
+error(){
+	echo -e "\n\e[1m\e[31m[INVALID COMMIT MESSAGE]"
+	echo -e "------------------------\033[0m\e[0m"
+	echo -e "$1!"
+	exit 1
+}
+
+
+build_summary_length_regexp(){
+	echo "^(.{$summary_min_length,$summary_max_length})$"
+}
+
+build_summary_regexp(){
+	local regexp="^("
+
+	if $revert; then
+		regexp="${regexp}revert: )?(\w+)("
+	fi
+
+	for type in "${types[@]}"
+	do
+		regexp="${regexp}$type|"
+	done
+
+	regexp="${regexp})(\(.+\))?: "
+	
+	echo $regexp
+}
+
+build_body_wrap_regexp(){
+	echo "^(.{0,$body_wrap}$)"
+}
+
+check(){
+	local line=$*
+	# Ignore comment lines (don't count line number either)
+    [[ "$line" =~ '^#.*' ]] && continue
+
+    let lineno+=1
+
+	types_str=${types[@]}
+
+    # Subject line tests
+    if [[ $lineno -eq 1 ]]; then
+        [[ ! $line =~ ^(.{10,50})$ ]] && error "\e[1mSubject line must have between \e[0m\e[34m$summary_min_length\033[0m \e[1mand \e[0m\e[34m$summary_max_length\033[0m \e[1mcharacters"
+        [[ ! $line =~ $summary_regexp.*$ ]] && error "\e[1mSpecify one of the types: \n\t\e[0m\e[34m$types_str\033[0m"
+        [[ ! "$line" =~ $summary_regexp.[A-Z].*$ ]] && error "\e[1mCapitalise the subject line"
+        [[ "$line" == *. ]] && error "\e[1mDo not end the subject line with a period"
+    fi
+
+    # Rules related to the commit message body
+    [[ $lineno -eq 2 ]] && [[ -n $line ]] && error "\e[1mSeparate subject from body with a blank line"
+    [[ $lineno -gt 1 ]] && [[ ! $line =~ $body_wrap_regexp ]] && error "\e[1mWrap the body at $body_wrap characters"
+}
+
+main(){
+	cat $1 > $tmp_file_name
+	summary_length_regexp=$(build_summary_length_regexp)
+	summary_regexp=$(build_summary_regexp)
+	body_wrap_regexp=$(build_body_wrap_regexp)
+
+	while read -r line
+	do
+		check $line
+	done < "$1"
+
+	rm -f $tmp_file_name
+	exit 0
+}
+
+lineno=0
+
+main $1

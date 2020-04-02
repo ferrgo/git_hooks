@@ -1,0 +1,22 @@
+{
+    "enabled": true,
+    "revert": false,
+    "summary_length": {
+        "min": 10,
+        "max": 50
+    },
+    "body_wrap": 72,
+    "types": [
+	"first",
+        "build",
+        "ci",
+        "docs",
+        "feat",
+        "fix",
+        "perf",
+        "ref",
+        "style",
+        "test",
+        "chore"
+    ]
+}
