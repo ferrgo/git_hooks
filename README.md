@@ -1,18 +1,20 @@
-# Hooks for Git
-
-## Commit-Msg
-See [aradi/git-commit-msg-hook](https://gist.github.com/aradi/a651ee97cc6bd09acb237794a05eaa7f)
-
-See [Sailr](https://github.com/craicoverflow/sailr)
-
-See [Convetional Commits](https://www.conventionalcommits.org/en/v1.0.0/)
-
-See [How to Write a Git Commit Message](https://chris.beams.io/posts/git-commit/)
-
-### Deps
+# Hookit Git
+## Deps
 1. `jq` > commit-msg hook uses `jq` for `JSON` parsing
 
-### Installation
-Let the `commit-msg.conf.json` in your project folder and make it reflect your Standards, copy or symlink the `commit-msg` script to your `project/path/.git/hooks/` folder. 
+## Installation
+Run `./install.sh` it will put `hookit` in your bin folder
 
-PS: May be necessary to make it executable as `chmod +x project/path/.git/hooks/commit-msg`
+Run `./uninstall.sh` to remove `hookit` from bin folder
+
+## Usage
+```
+Hookit!
+Usage: hookit [ -cm ] [ -c | -s ] [-h]
+-h, --help				Shows this help msg"
+-cm, --commit-msg		Add commit-msg hook.
+                        Default behavior is to add all hooks,
+                        this makes hookit ignore non-specified hooks
+-c, --config			Uses core.hooksPath from git to setup hooks.
+-s, --symlink			Uses symlink from hookit folder to .git/hooks/
+```
