@@ -51,10 +51,24 @@ hook_all()
 	hook_commit_msg
 }
 
+unhook()
+{
+	log "Unhooking"
+	[[ $(git config core.hookspath) ]] && log "Removing git config" && git config core.hookspath "" && exit 0
+	log "Looking for symlinks to remove"
+	hooks_symlinks=$(find .git/hooks -type l)
+	for hook in "${hooks_symlinks[@]}"
+	do
+		[[ $hook =~ ^.*commit-msg$ ]] && log "Found a commit-msg symlinked... Removing it" && rm $hook
+	done
+	exit 0
+}
+
 main()
 {
 	# Check if git repo
 	[[ -d .git ]] || error "This is not a Git repository! Ain't hooking it..."
+	[[ $unhook ]] && unhook
 	[[ $symlink && $config ]] && usage && error "--symlink and --config cannot be used together"
 	[[ ! $symlink && ! $config ]] && config=true
 	log "Git repo"
@@ -73,6 +87,9 @@ while [ "$1" != "" ]; do
 		-h | --help )
 			usage
 			exit 0;;
+		-u | --unhook )
+			unhook=true
+			shift;;
 		-cm | --commit-msg )
 			all=false
 			commit_msg=true
