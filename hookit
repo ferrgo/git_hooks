@@ -1,0 +1,91 @@
+#!/usr/bin/env bash
+
+HOME_FOLDER=$(awk -v FS=':' -v user="$USER" '($1==user) {print $6}' "/etc/passwd")
+DIR="$( cd "$( dirname "$(readlink -f "${BASH_SOURCE[0]}")" )" >/dev/null 2>&1 && pwd )"
+
+all=true
+
+usage()
+{
+	echo -e "\e[1mHookit!\e[0m"
+	echo -e "Usage: \e[1mhookit [ -cm ] [ -c | -s ] [-h]\e[0m"
+	echo ""
+	echo ""
+	echo "-h, --help				Shows this help msg"
+	echo "-cm, --commit-msg			Add commit-msg hook.
+						Default behavior is to add all hooks,
+						this makes hookit ignore non-specified hooks"
+	echo "-c, --config				Uses core.hooksPath from git to setup hooks."
+	echo "-s, --symlink				Uses symlink from hookit folder to .git/hooks/"
+
+}
+
+error()
+{
+	echo -e "\e[1m\e[31m[ERROR]\033[0m\e[0m $1"
+	exit 1
+}
+
+log()
+{
+	echo -e "\e[1m[INFO] \e[0m$1"
+}
+
+hook_commit_msg()
+{
+	[[ $(find .git/ -name "commit-msg" -type f) ]] && error "There is already a git hook. File commit-msg found"
+	[[ $(find .git/ -name "commit-msg" -type l) ]] && error "Already hookited. Symlink to commit-msg found"
+	log "Hooking commit-msg"
+	cp $DIR/hooks/commit-msg ./hooks/
+	cp $DIR/commit-msg.conf.json .
+	log "Copied hook and conf.json locally"
+	log "Symlinking hook"
+	[[ $symlink ]] && ln -rs ./hooks/commit-msg .git/hooks/commit-msg && log "Symlinked"
+	[[ $config ]] && git config --local core.hooksPath ./hooks/ && log "Hooks n git config"
+	log "Hooked commit-msg"
+}
+
+hook_all()
+{
+	log "Hooking all"
+	hook_commit_msg
+}
+
+main()
+{
+	# Check if git repo
+	[[ -d .git ]] || error "This is not a Git repository! Ain't hooking it..."
+	[[ $symlink && $config ]] && usage && error "--symlink and --config cannot be used together"
+	[[ ! $symlink && ! $config ]] && config=true
+	log "Git repo"
+	# Check or create hook folder
+	[[ -d hooks ]] || mkdir hooks
+	[[ $all ]] && hook_all
+	[[ $commit_msg ]] && hook_commit_msg
+}
+
+# No args
+# [[ $# -eq 0 ]] && usage && exit 1
+
+# Parse args
+while [ "$1" != "" ]; do
+	case $1 in
+		-h | --help )
+			usage
+			exit 0;;
+		-cm | --commit-msg )
+			all=false
+			commit_msg=true
+			shift;;
+		-s | --symlink )
+			symlink=true
+			shift;;
+		-c | --config )
+			config=true
+			shift;;
+		* ) usage
+			exit 1;;
+	esac
+done
+
+main
