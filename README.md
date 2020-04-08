@@ -11,10 +11,11 @@ Run `./uninstall.sh` to remove `hookit` from bin folder
 ```
 Hookit!
 Usage: hookit [ -cm ] [ -c | -s ] [-h]
--h, --help				Shows this help msg"
--cm, --commit-msg		Add commit-msg hook.
-                        Default behavior is to add all hooks,
-                        this makes hookit ignore non-specified hooks
+-h, --help			Shows this help msg"
+-u, --unhook			Unhooks the repo
+-cm, --commit-msg		Adds commit-msg hook.
+                        	Default behavior is to add all hooks,
+                        	this makes hookit ignore non-specified hooks
 -c, --config			Uses core.hooksPath from git to setup hooks.
 -s, --symlink			Uses symlink from hookit folder to .git/hooks/
 ```
