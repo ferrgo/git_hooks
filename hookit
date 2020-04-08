@@ -5,13 +5,18 @@ DIR="$( cd "$( dirname "$(readlink -f "${BASH_SOURCE[0]}")" )" >/dev/null 2>&1 &
 
 all=true
 
+version(){
+	echo -e "\e[1mHookit!\e[0m $(cat $DIR/VERSION)"
+}
+
 usage()
 {
-	echo -e "\e[1mHookit!\e[0m"
+	version
 	echo -e "Usage: \e[1mhookit [ -cm ] [ -c | -s ] [-h]\e[0m"
 	echo ""
 	echo ""
 	echo "-h, --help				Shows this help msg"
+	echo "-v, --version				Prints this repo version"
 	echo "-u, --unhook				Unhooks the repo"
 	echo "-cm, --commit-msg			Add commit-msg hook.
 					Default behavior is to add all hooks,
@@ -85,6 +90,9 @@ main()
 # Parse args
 while [ "$1" != "" ]; do
 	case $1 in
+		-v | --version )
+			version
+			exit 0;;
 		-h | --help )
 			usage
 			exit 0;;
