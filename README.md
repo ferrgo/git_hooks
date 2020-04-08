@@ -11,7 +11,8 @@ Run `./uninstall.sh` to remove `hookit` from bin folder
 ```
 Hookit!
 Usage: hookit [ -cm ] [ -c | -s ] [-h]
--h, --help			Shows this help msg"
+-h, --help			Shows this help msg
+-v, --version			Shows version
 -u, --unhook			Unhooks the repo
 -cm, --commit-msg		Adds commit-msg hook.
                         	Default behavior is to add all hooks,
