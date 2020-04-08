@@ -12,9 +12,10 @@ usage()
 	echo ""
 	echo ""
 	echo "-h, --help				Shows this help msg"
+	echo "-u, --unhook				Unhooks the repo"
 	echo "-cm, --commit-msg			Add commit-msg hook.
-						Default behavior is to add all hooks,
-						this makes hookit ignore non-specified hooks"
+					Default behavior is to add all hooks,
+					this makes hookit ignore non-specified hooks"
 	echo "-c, --config				Uses core.hooksPath from git to setup hooks."
 	echo "-s, --symlink				Uses symlink from hookit folder to .git/hooks/"
 
