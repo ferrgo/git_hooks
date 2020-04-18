@@ -52,7 +52,7 @@ build_body_wrap_regexp(){
 check(){
 	local line=$*
 	# Ignore comment lines (don't count line number either)
-    [[ "$line" =~ '^#.*' ]] && continue
+    [[ $line =~ ^\#.* ]] && return
 
     let lineno+=1
 
